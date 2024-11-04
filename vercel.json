@@ -1,0 +1,16 @@
+{
+    "version": "37.14.0",
+    "builds":[
+        {
+            "src":"./app.js",
+            "use":"@vercel/node"
+        }
+    ],
+    "routes":[
+        {
+            "src":"/(.*)",
+            "dest":"/"
+        }
+    ]
+
+}
