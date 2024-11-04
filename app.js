@@ -41,11 +41,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth',authRouter);
 app.use('/post',postRouter)
-
+app.use("/",(req,res)=>{
+  res.json({message:"chalo chal rha hai"})
+})
 //  change for deploy the website
 app.use(express.static(path.join(_dirname,"/frontend/dist")))
 app.get('*',(req,res)=>{
