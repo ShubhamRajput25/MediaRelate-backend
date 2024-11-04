@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "echo 'No build necessary for plain JavaScript Node.js projects'",
     "start": "nodemon app.js"
   },
   "dependencies": {
