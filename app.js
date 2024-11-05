@@ -41,18 +41,23 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', indexRouter);
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth',authRouter);
 app.use('/post',postRouter)
-app.use("/",(req,res)=>{
-  res.json({message:"chalo chal rha hai"})
-})
+// app.use("/",(req,res)=>{
+//   res.json({message:"chalo chal rha hai"})
+// })
 //  change for deploy the website
-app.use(express.static(path.join(_dirname,"/frontend/dist")))
-app.get('*',(req,res)=>{
-    res.sendFile(path.resolve(_dirname,"frontend","dist","index.html"))
-})
+// app.use(express.static(path.join(_dirname,"/frontend/dist")))
+// app.get('*',(req,res)=>{
+//     res.sendFile(path.resolve(_dirname,"frontend","dist","index.html"))
+// })
+
+const server = app.listen(process.env.PORT, () => {
+  console.log("Server is running on port", process.env.PORT);
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
