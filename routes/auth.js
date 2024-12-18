@@ -11,6 +11,7 @@ const { sendOtpForUserSignup } = require('../mail');
 const sendToken = require('../jwtToken');
 /* GET home page. */
 
+
 router.get('/', function (req, res, next) {
     res.send("hello")
 });
@@ -42,10 +43,12 @@ router.post('/signup', async function (req, res, next) {
 
 });
 
-router?.post('/verify-signup-otp', async function(req, rea, next){
+router.post('/verify-signup-otp', async function(req, res, next){
+    console.log("call")
     try{
+        
       const { name, username, email, password, otp } = req.body;
-
+      
       const otpMatch = await Otp?.findOne({email, otp})
 
       if(!otpMatch) {
@@ -57,13 +60,13 @@ router?.post('/verify-signup-otp', async function(req, rea, next){
         await Otp?.deleteOne({email, otp})
         return res?.status(400)?.json({status: false, message: "Otp Expired"})  
       }
-
+     
       //delete otp
-      await deleteOne({email, otp})
-
+      await USER?.deleteOne({email, otp})
+      console.log("enter")
       //hash password
       const hash = await bcrypt?.hash(password, 12)
-
+      
       //Create New User
         const user = new USER({
             name,
@@ -73,12 +76,12 @@ router?.post('/verify-signup-otp', async function(req, rea, next){
         })
 
         user.save()
-            .then(user => { res.json({ status: true, message: "saved successfully" }) })
+            .then(user => { return res.json({ status: true, message: "saved successfully" }) })
             .catch(err => { console.log(err) })
    
 
     }catch(e){
-        res.status(200).json({data:[],status:false,message:"server error"})
+       return res.status(400).json({data:[],status:false,message:"server error"})
     }
 })
 
@@ -87,7 +90,7 @@ router.post('/signin', async function (req, res, next) {
     const { email, password } = req.body
 
     if (!email || !password) {
-        res.status(422).json({ error: "pls add all the fields" })
+       return res.status(422).json({ error: "pls add all the fields" })
     }
 
     let user = await USER.findOne({ $or: [{ email: email }, { username: email }] })

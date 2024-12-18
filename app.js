@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var path = require('path')
 const _dirname = path.resolve()
+require('dotenv').config();
 
 require("./models/model")
 

@@ -1,36 +1,27 @@
 const jwt = require("jsonwebtoken")
 const mongoose = require("mongoose")
-const user = mongoose.model("user") 
+const USER = mongoose.model("user") 
 
-module.exports=(req,res,next)=>{
+module.exports=async(req,res,next)=>{
     const {authorization} = req.headers;
-    //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxx",req.headers.authorization)
+   
     if(!authorization){
-    console.log("hlooooo") 
-
-        // console.log(error)
         return res.status(401).json({error:"you must have login"})
     }
 
     const token = authorization.replace("Bearer ","")
- 
    
-    jwt.verify(token,process.env.JWT_SECRET,(error,payload)=>{
-        if(error){
-           
-            return res.status(401).json({error:"you must have login"}) 
-          
-        }
+    const decoded =  jwt.verify(token,process.env.JWT_SECRET)
 
-        const {_id}=payload
-        user.findById(_id).then(userData=>{
-            req.user = userData
-            // console.log(userData)
-            // res.status(200).json({data:userData})
-            next() 
-        })
-       
-    })
-   
-    
+    if (!decoded) {
+        return res.status(401).json({error:"you must have login"}) 
+    }
+
+    const user = await USER.findOne({ _id: decoded.id })
+
+    if(user) {
+        req.user = user
+    }
+
+    next()    
 }

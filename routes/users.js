@@ -129,7 +129,7 @@ router.post('/editprofile',requireLogin,function(req,res,next){
 
   }catch(e){
     console.log(e)
-    res.status(200).json({data:[],status:false,message:"server error"})
+    return res.status(200).json({data:[],status:false,message:"server error"})
   }
 })
 

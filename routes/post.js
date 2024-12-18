@@ -166,6 +166,8 @@ router.post('/fetch-comment-by-post',requireLogin,async function(req,res,next){
     try{
         const { postId } = req.body;
         const {pageNumber} = req.query;
+        let limit = req.query.limit
+        let skip = req.query.skip
 
         let result = await comments.find({postId:postId})
                             .sort({createdAt:-1})
@@ -177,7 +179,10 @@ router.post('/fetch-comment-by-post',requireLogin,async function(req,res,next){
                                 populate: {
                                     path: 'replyBy replyTo'
                                   }
-                            });
+                            })
+                            .skip(parseInt(skip))
+                            .limit(parseInt(limit))
+
 
         if(result){
             return res.status(200).json({data:result,status:true,message:"Fetch Comment succussfully"})
@@ -193,9 +198,14 @@ router.post('/fetch-comment-by-post',requireLogin,async function(req,res,next){
 
 router.get('/fetchAllPosts',requireLogin,async function(req,res,next){
     try{
+        let limit = req.query.limit
+        let skip = req.query.skip
         let result = await posts.find({})
         .sort({createdAt:-1})
         .populate('postedby')
+        .skip(parseInt(skip))
+        .limit(parseInt(limit))
+        
 
         return res.status(200).json({data:result,status:true,message:"Fetch succussfully"})
     }catch(e){

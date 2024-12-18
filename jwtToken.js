@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 // create token and saving that in cookies
 const sendToken = (user, statusCode, res, message = "") => {
 
-    const token = jwt.sign({ id: user._id, name: user.name, email: user.email, phone: user?.phone || "" }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({ id: user._id || "" }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES,
     });
 
