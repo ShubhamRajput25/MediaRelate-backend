@@ -14,6 +14,7 @@ const sendToken = (user, statusCode, res, message = "") => {
         secure: true,
     };
 
+
     return res
         .status(statusCode)
         .cookie("token", token, options)

@@ -8,11 +8,11 @@ module.exports=async(req,res,next)=>{
     if(!authorization){
         return res.status(401).json({error:"you must have login"})
     }
-
+   
     const token = authorization.replace("Bearer ","")
    
     const decoded =  jwt.verify(token,process.env.JWT_SECRET)
-
+   
     if (!decoded) {
         return res.status(401).json({error:"you must have login"}) 
     }
