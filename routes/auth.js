@@ -10,7 +10,8 @@ const Otp = require("../models/otp-model");
 const { sendOtpForUserSignup } = require('../mail');
 const sendToken = require('../jwtToken');
 const generateUserName = require('../constant');
-
+const comments = mongoose.model('comment')
+const posts = mongoose.model('post')
 
 /* GET home page. */
 
@@ -277,5 +278,37 @@ router.post('/change-password-by-forget-password', async function(req, res, next
     }
 })
 
+router.post('/delete-user', async function (req, res, next) {
+    const { email } = req.body; // Assuming you delete a user based on email or username
+
+    if (!email) {
+        return res.status(422).json({ error: "Please provide an email or username" });
+    }
+
+    try {
+        // Step 1: Find the user
+        let user = await USER.findOne({ $or: [{ email: email }, { username: email }] });
+
+        if (!user) {
+            return res.status(400).json({ status: false, message: "User does not exist", data: [] });
+        }
+
+        // Step 2: Delete the comments related to those posts
+        await comments.deleteMany({ postId: { $in: await posts.find({ postedby: user._id }).select('_id') } });
+
+        // Step 3: Delete the user's posts
+        await posts.deleteMany({ postedby: user._id });
+
+        // Step 4: Delete the user
+        await USER.deleteOne({_id:user._id});
+
+        // Step 5: Return success response
+        return res.status(200).json({ status: true, message: "User account deleted successfully", data: [] });
+
+    } catch (error) {
+        console.error("Error while deleting user:", error);
+        return res.status(500).json({ status: false, message: "Something went wrong", data: [] });
+    }
+});
 
 module.exports = router;

@@ -225,5 +225,33 @@ router.get('/getsuggestionList',requireLogin,async function (req,res,next) {
     res.status(200).json({data:[],status:false,message:"server error"})
   }
 })
+
+router.get('/fetch-user-with-pagination',requireLogin,async function (req,res,next) {
+  try{
+    const { pageNumber } = req.query;
+
+    const pageSize = 10; 
+
+    const totalUsers = await USER.countDocuments({})
+
+    let users = await USER.find({})
+                .sort({ createdAt: -1 })
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
+   
+      res.status(200).json({
+        data:{
+        users, 
+        totalUsers: totalUsers, 
+        totalPages: Math.ceil(totalUsers/pageSize), 
+        currentPage: parseInt(pageNumber, 10)},
+        status:true,
+        message:"fetch users list SuccessFully"})
+
+  }catch(e){
+    console.log(e)
+    res.status(200).json({data:[],status:false,message:"server error"})
+  }
+})
 module.exports = router;
    

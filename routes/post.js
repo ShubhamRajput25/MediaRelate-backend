@@ -9,31 +9,6 @@ const replys = mongoose.model('reply')
 
 const cloudinary = require('cloudinary').v2;
 
-// router.post('/createpost',requireLogin,function(req,res,next){
-//     console.log("body",req.body)
-//     const {body,picture} = req.body
-
-//     if(!body||!picture){
-//     return  res.status(422).json({ error: "pls add all the fields" })
-//     }
-//    // req.user
-
-//     console.log("ok") 
-
-// //    const post = new posts({
-// //     body,
-// //     picture,  
-// //     postedby:req.user
-// //    })
- 
-//    posts.insertMany({body:body,picture:picture,postedby:req.user}).then((post)=>{
-//     // console.log("post hooo gyiiiii",post)
-//     return  res.status(200).json({status:true,message:'submit successfully'})
-//    })
-//    .catch(err => { console.log(err) })
-
-// })
-
 router.post('/createpost', requireLogin, async (req, res) => {
     try {
         console.log("Request Body Received:", req.body);  // Log the received data
@@ -61,8 +36,6 @@ router.post('/createpost', requireLogin, async (req, res) => {
         return res.status(500).json({ status: false, error: "Internal server error" });
     }
 });
-
-
 
 router.post('/fetchpost',requireLogin,async function(req,res,next){
     // console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjj")
@@ -227,6 +200,8 @@ router.delete('/deletePost/:postId',requireLogin,async function(req,res,next){
         if(!(findPost[0]?.postedby?.toString() == req.user._id?.toString())){
             return res.status(200).json({data:[],status:false,message:"User Not Autherized"})
         }
+
+        await comments.deleteMany({ postId: postId });
 
          // Delete from Cloudinary
          if (post.picture) {
