@@ -9,6 +9,12 @@ const replys = mongoose.model('reply')
 
 const cloudinary = require('cloudinary').v2;
 
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, // Cloudinary cloud name
+    api_key: process.env.CLOUDINARY_API_KEY,       // Cloudinary API key
+    api_secret: process.env.CLOUDINARY_API_SECRET, // Cloudinary API secret
+});
+
 router.post('/createpost', requireLogin, async (req, res) => {
     try {
         console.log("Request Body Received:", req.body);  // Log the received data
@@ -204,13 +210,13 @@ router.delete('/deletePost/:postId',requireLogin,async function(req,res,next){
         await comments.deleteMany({ postId: postId });
 
          // Delete from Cloudinary
-         if (post.picture) {
-            const picturePublicId = post.picture.split('/').pop().split('.')[0];
+         if (findPost[0]?.picture) {
+            const picturePublicId = findPost[0].picture.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(picturePublicId);
         }
 
-        if (post.video) {
-            const videoPublicId = post.video.split('/').pop().split('.')[0];
+        if (findPost[0]?.video) {
+            const videoPublicId = findPost[0].video.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(videoPublicId);
         }
 
@@ -362,7 +368,5 @@ router.post('/unlike-reply',requireLogin,async function(req,res,next){
         res.status(200).json({data:[],status:false,message:"server error"})
     }
 })
-
-
 
 module.exports = router
