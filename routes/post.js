@@ -369,4 +369,17 @@ router.post('/unlike-reply',requireLogin,async function(req,res,next){
     }
 })
 
+router.get('/fetch-no-of-posts-of-user',requireLogin,async function(req,res,next){
+    try{ 
+        let result = await posts.find({postedby:req.user._id})
+        .sort({createdAt:-1})
+        .populate('postedby')        
+
+        return res.status(200).json({data:result,status:true,message:"Fetch succussfully"})
+    }catch(e){
+        console.log(e)
+        res.status(200).json({data:[],status:false,message:"server error"})
+    }
+})
+
 module.exports = router
