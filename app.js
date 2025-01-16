@@ -26,7 +26,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth')
 var postRouter = require('./routes/post')
-
+var contactRouter = require('./routes/contact')
 
 var app = express();
 
@@ -48,6 +48,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth',authRouter);
 app.use('/post',postRouter)
+app.use('/contact', contactRouter)
 // app.use("/",(req,res)=>{
 //   res.json({message:"chalo chal rha hai"})
 // })
